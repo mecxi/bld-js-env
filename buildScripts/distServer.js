@@ -1,22 +1,19 @@
 import express from 'express';
 import path from 'path';
 import open from 'open';
-import webpack from 'webpack';
-import config from '../webpack.config.dev';
+import compression from 'compression';
 
 const port = '2000';
 const app = express();
-const compiler = webpack(config);
 
-/* tell express to use webpack */
-app.use(require('webpack-dev-middleware')(compiler, {
-  noInfo: true,
-  publicPath: config.output.publicPath
-}));
+/* tell express to serve static files */
+app.use(express.static('dist'));
+/* enable Gzip compression in express*/
+app.use(compression());
 
 /* tell express which route to handle */
 app.get('/', function (req, res) {
-  res.sendFile(path.join(__dirname, '../src/index.html'));
+  res.sendFile(path.join(__dirname, '../dist/index.html'));
 });
 
 app.get('/users', function(req, res){
